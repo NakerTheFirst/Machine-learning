@@ -1,2 +1,6 @@
 # Machine-learning
-Practical Algorithmics class C++ implementations
+My Advanced Programming class Python implementations for machine learning tasks
+
+
+## List of assignments
+- [ ] Matrix manipulation
