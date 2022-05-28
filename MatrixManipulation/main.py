@@ -7,21 +7,44 @@ def main():
 
 
 # noinspection PyPep8Naming
-def setList():
+def setList(n_, m_):
 
     lst_ = []
-    n = int(input("Enter the number of rows: "))
-    m = int(input("Enter the number of columns: "))
 
     # Take user input for 2D matrix
     for rows in range(0, n):
         tmplst = []
         for cols in range(0, m):
-            value = float(input(f"Value of element {rows}x{cols}: "))
+            value = input(f"Value of element {rows}x{cols}: ")
             tmplst.append(value)
         lst_.append(tmplst)
 
     return lst_
+
+
+# noinspection PyPep8Naming
+def checkList(lst_):
+
+    isNum = []
+
+    for i in range(len(lst_)):
+        for j in range(len(lst_[i])):
+            if not lst_[i][j].isnumeric():
+                print(f"\nValue of lst_[{i}][{j}] is not numeric."
+                      f"\nWhat do you want to do with it?\n")
+                print("1. Replace \n2. Change to 0\n")
+                choice = int(input("Enter corresponding number: "))
+                match choice:
+                    case 1:
+                        repl = input("Input replacing number: ")
+                        while not repl.isnumeric():
+                            repl = input("Value is not numeric. "
+                                         "Reenter the value: ")
+                            lst_[i][j] = repl
+                        print(f"Replacing complete")
+                    case 2:
+                        lst_[i][j] = 0
+                        print("Changing to 0 complete")
 
 
 if __name__ == '__main__':
@@ -43,15 +66,18 @@ if __name__ == '__main__':
         def get__NMatrix(self, __NMatrix):
             return self.__NMatrix
 
-    fruits = [["Apple", "Banana", "Cherry"],
-              ["Kiwi", "Orange", "Tomato"],
-              ["Berry", "Mango", "Cranberry"]]
 
-    lst = setList()
+    n = int(input("Enter the number of rows: "))
+    m = int(input("Enter the number of columns: "))
+
+    lst = setList(n, m)
+
+    checkList(lst)
+
+    print(lst)
 
     t1 = MetaMat(lst)
 
-    print(t1.get__List(lst), end=" \n")
-    print(t1.get__PFrame(lst), end=" \n")
-    print(t1.get__NMatrix(lst), end=" \n")
-
+    # print(t1.get__List(lst), end=" \n")
+    # print(t1.get__PFrame(lst), end=" \n")
+    # print(t1.get__NMatrix(lst), end=" \n")
