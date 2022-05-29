@@ -3,6 +3,7 @@ import pandas as pd
 
 # Main, setList, checkList
 
+
 def main():
     return 0
 
@@ -26,7 +27,6 @@ def setList(n_, m_):
 # noinspection PyPep8Naming
 def checkList(lst_):
 
-    isNum = []
     for i in range(len(lst_)):
         for j in range(len(lst_[i])):
             if not lst_[i][j].isnumeric():
@@ -41,6 +41,7 @@ def checkList(lst_):
                             repl = input("Value is not numeric. "
                                          "Reenter the value: ")
                             lst_[i][j] = repl
+                        lst_[i][j] = repl
                         print(f"Replacing complete")
                     case 2:
                         lst_[i][j] = 0
@@ -52,30 +53,31 @@ if __name__ == '__main__':
     # noinspection PyPep8Naming
     class MetaMat:
         def __init__(self, list_):
-            self.list_ = list_
-            self.__List = self.list_
-            self.__PFrame = pd.DataFrame(list_)
-            self.__NMatrix = np.array(list_)
+            self.__List = list_
+            self.__NMatrix = np.array(self.__List)
+            self.__PFrame = pd.DataFrame(self.__List)
 
         # Swapping is zero-indexed
         def swapListRows(self, row1, row2):
             self.__List[row1], self.__List[row2] \
                 = self.__List[row2], self.__List[row1]
 
-        def swapMatrixColumns(self):
-            pass
+        def swapMatrixColumns(self, col1, col2):
+            tmp = np.copy(self.__NMatrix[:, col1])
+            self.__NMatrix[:, col1] = self.__NMatrix[:, col2]
+            self.__NMatrix[:, col2] = tmp
 
         def transposePSquare(self):
             pass
 
         # Getters
-        def get__List(self, __List):
+        def get__List(self):
             return self.__List
 
-        def get__PFrame(self, __PFrame):
+        def get__PFrame(self):
             return self.__PFrame
 
-        def get__NMatrix(self, __NMatrix):
+        def get__NMatrix(self):
             return self.__NMatrix
 
 
@@ -87,15 +89,14 @@ if __name__ == '__main__':
 
     checkList(lst)
 
-    print(lst)
-
     t1 = MetaMat(lst)
 
-    # Swapping is zero-indexed
-    t1.swapListRows(0, 1)
+    t1.swapMatrixColumns(0, 2)
 
-    print(lst)
+    print(t1.get__NMatrix())
 
-    # print(t1.get__List(lst), end=" \n")
-    # print(t1.get__PFrame(lst), end=" \n")
-    # print(t1.get__NMatrix(lst), end=" \n")
+    # t1.swapListRows(0, 1)
+
+    # print(t1.get__List())
+
+    # print(lst)
