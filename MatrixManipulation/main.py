@@ -67,21 +67,15 @@ if __name__ == '__main__':
             self.__NMatrix[:, col1] = self.__NMatrix[:, col2]
             self.__NMatrix[:, col2] = tmp
 
-        def transposePSquare(self):
-            pass
-
-        def slice(self, df_, col1, row1, col2, row2):
+        def transposePSquare(self, df_, col1, row1, col2, row2):
 
             # Check if matrix is square
             if not abs(col1 - col2) == abs(row1 - row2):
                 return "Indexes don't form a square matrix"
+
             # Check if matrix is 1x1 size
             if col1 == col2 and row1 == row2:
                 return df_.iloc[row1:row1 + 1, row1:row1 + 1]
-
-            # Utility
-            print("Index 1: ", df_.iloc[row1, col1])
-            print("Index 2: ", df_.iloc[row2, col2])
 
             # Row2 and col2 must be higher than row1 and col1
             if row1 > row2:
@@ -90,8 +84,13 @@ if __name__ == '__main__':
             if col1 > col2:
                 col1, col2 = col2, col1
 
+            # Slice submatrix and transpose
             sliced = df_.iloc[row1:row2+1, col1:col2+1]
-            return sliced
+            sliced = pd.DataFrame.transpose(sliced)
+
+            transposed = sliced
+
+            return transposed
 
         # Getters
         def get__List(self):
@@ -116,9 +115,9 @@ if __name__ == '__main__':
     # transpose(col1, row1, col2, row2)
     # matrix = [[11, 22, 33, 44], [55, 66, 77, 88],
     #           [99, 111, 122, 133], [144, 155, 166, 177]]
-    
+
     # df = pd.DataFrame(matrix)
 
     print("Before slicing:\n", t1.get__PFrame())
 
-    print("After slicing:\n", t1.slice(t1.get__PFrame(), 1, 2, 3, 0))
+    print("After transposing:\n", t1.transposePSquare(t1.get__PFrame(), 0, 0, 2, 2))
