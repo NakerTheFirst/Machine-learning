@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-
-# Main, setList, checkList
+import time
 
 
 def main():
@@ -17,6 +16,8 @@ def setList(n_, m_):
     for rows in range(0, n_):
         tmplst = []
         for cols in range(0, m_):
+            if rows == 0 and cols == 0:
+                print("\n")
             value = input(f"Value of element {rows}x{cols}: ")
             tmplst.append(value)
         lst_.append(tmplst)
@@ -44,7 +45,7 @@ def checkList(lst_):
                         lst_[i][j] = repl
                         print(f"Replacing complete")
                     case 2:
-                        lst_[i][j] = 0
+                        lst_[i][j] = '0'
                         print("Changing to 0 complete")
 
 
@@ -63,37 +64,40 @@ if __name__ == '__main__':
             self.__List[row1], self.__List[row2] \
                 = self.__List[row2], self.__List[row1]
             self.markAction = 1
+            self.update()
 
         def swapMatrixColumns(self, col1, col2):
             tmp = np.copy(self.__NMatrix[:, col1])
             self.__NMatrix[:, col1] = self.__NMatrix[:, col2]
             self.__NMatrix[:, col2] = tmp
             self.markAction = 2
+            self.update()
 
-        def transposePSquare(self, col1, row1, col2, row2):
+        def transposePSquare(self, key1, index1, key2, index2):
 
             df_ = self.get__PFrame()
 
             # Check if matrix is square
-            if not abs(col1 - col2) == abs(row1 - row2):
+            if not abs(key1 - key2) == abs(index1 - index2):
                 return "Indexes don't form a square matrix"
 
             # Check if matrix is 1x1 size
-            if col1 == col2 and row1 == row2:
-                return df_.iloc[row1:row1 + 1, row1:row1 + 1]
+            if key1 == key2 and index1 == index2:
+                return df_.iloc[index1:index1 + 1, index1:index1 + 1]
 
-            # Row2 and col2 must be higher than row1 and col1
-            if row1 > row2:
-                row1, row2 = row2, row1
+            # index2 and key2 must be greater than index1 and key1
+            if index1 > index2:
+                index1, index2 = index2, index1
 
-            if col1 > col2:
-                col1, col2 = col2, col1
+            if key1 > key2:
+                key1, key2 = key2, key1
 
             # Slice submatrix and transpose
-            sliced = df_.iloc[row1:row2+1, col1:col2+1]
+            sliced = df_.iloc[index1:index2+1, key1:key2+1]
             self.__PFrame = pd.DataFrame.transpose(sliced)
 
             self.markAction = 3
+            self.update()
 
         def update(self):
 
@@ -128,38 +132,84 @@ if __name__ == '__main__':
         def get__NMatrix(self):
             return self.__NMatrix
 
+    # User manual
+    print("\nWelcome! \nThe program provides basic matrix manipulation functionalities in Python.\n")
+    print("Please specify a matrix\n")
     n = int(input("Enter the number of rows: "))
     m = int(input("Enter the number of columns: "))
 
     lst = setList(n, m)
 
     checkList(lst)
-
     t1 = MetaMat(lst)
+    close = False
 
-    # print("Before 1. swapping rows:\n", t1.get__List())
-    # print("Before 2. swapping cols:\n", t1.get__NMatrix())
-    print("Before 3. transposing:\n", t1.get__PFrame())
+    while not close:
 
-    # 1. swap list rows
-    # t1.swapListRows(0, 1)
+        print("\nWhat action do you want to take?")
+        print("1. Print the matrix")
+        print("2. Reenter the matrix")
+        print("3. Swap rows in 2D Python list")
+        print("4. Swap columns")
+        print("5. Transpose the matrix")
+        print("6. Update all the matrix representations")
+        print("7. Quit")
 
-    # 2. swap matrix columns
-    # t1.swapMatrixColumns(0, 1)
+        action = int(input())
 
-    # 3. transpose dataframe
-    t1.transposePSquare(0, 0, 2, 2)
+        match action:
+            case 1:
+                print("\nWhich matrix representation do you wish to see?")
+                print("1. 2D Python list\n"
+                      "2. Numpy 2D array\n"
+                      "3. Pandas dataframe\n"
+                      "4. All of the mentioned\n")
+                subaction = int(input("Enter a number: "))
 
-    # print("After 1. swapping rows:\n", t1.get__List())
-    # print("After 2. swapping cols:\n", t1.get__NMatrix())
-    print("After 3. transposing:\n", t1.get__PFrame())
+                print("\n")
 
-    print("List before update: \n", t1.get__List())
-    print("Pandas dataframe before update: \n", t1.get__PFrame())
-    print("Numpy array before update: \n", t1.get__NMatrix())
+                match subaction:
+                    case 1:
+                        print("Python list:\n", t1.get__List())
+                    case 2:
+                        print("Numpy 2D array:\n", t1.get__NMatrix())
+                    case 3:
+                        print("Pandas dataframe:\n", t1.get__PFrame())
+                    case 4:
+                        print("Python list:\n", t1.get__List())
+                        print("\n")
+                        print("Numpy 2D array:\n", t1.get__NMatrix())
+                        print("\n")
+                        print("Pandas dataframe:\n", t1.get__PFrame())
+                        print("\n")
 
-    t1.update()
+                time.sleep(2.5)
 
-    print("List after update: \n", t1.get__List())
-    print("Pandas dataframe after update: \n", t1.get__PFrame())
-    print("Numpy array after update: \n", t1.get__NMatrix())
+            case 2:
+                n = int(input("Enter the number of rows: "))
+                m = int(input("Enter the number of columns: "))
+
+                lst = setList(n, m)
+                checkList(lst)
+                t1 = MetaMat(lst)
+
+            case 3:
+                a = int(input("Define the first row to swap: "))
+                b = int(input("Define the second row to swap: "))
+                t1.swapListRows(a, b)
+
+            case 4:
+                a = int(input("Define the first column to swap: "))
+                b = int(input("Define the second column to swap: "))
+                t1.swapMatrixColumns(a, b)
+            case 5:
+                a = int(input("Define row of the first submatrix element to transpose: "))
+                b = int(input("Define column of the first submatrix element to transpose: "))
+                c = int(input("Define row of the second submatrix element to transpose: "))
+                d = int(input("Define column of the second submatrix element to transpose: "))
+                t1.transposePSquare(a, b, c, d)
+            case 6:
+                t1.update()
+            case 7:
+                print("Quitting...")
+                close = True
