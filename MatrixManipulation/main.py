@@ -56,18 +56,23 @@ if __name__ == '__main__':
             self.__List = list_
             self.__NMatrix = np.array(self.__List)
             self.__PFrame = pd.DataFrame(self.__List)
+            self.markAction = 0
 
         # Swapping is zero-indexed
         def swapListRows(self, row1, row2):
             self.__List[row1], self.__List[row2] \
                 = self.__List[row2], self.__List[row1]
+            self.markAction = 1
 
         def swapMatrixColumns(self, col1, col2):
             tmp = np.copy(self.__NMatrix[:, col1])
             self.__NMatrix[:, col1] = self.__NMatrix[:, col2]
             self.__NMatrix[:, col2] = tmp
+            self.markAction = 2
 
-        def transposePSquare(self, df_, col1, row1, col2, row2):
+        def transposePSquare(self, col1, row1, col2, row2):
+
+            df_ = self.get__PFrame()
 
             # Check if matrix is square
             if not abs(col1 - col2) == abs(row1 - row2):
@@ -86,11 +91,32 @@ if __name__ == '__main__':
 
             # Slice submatrix and transpose
             sliced = df_.iloc[row1:row2+1, col1:col2+1]
-            sliced = pd.DataFrame.transpose(sliced)
+            self.__PFrame = pd.DataFrame.transpose(sliced)
 
-            transposed = sliced
+            self.markAction = 3
 
-            return transposed
+        def update(self):
+
+            match self.markAction:
+
+                case 0:
+                    print("Nothing to update")
+
+                case 1:
+                    self.__NMatrix = np.array(self.__List)
+                    self.__PFrame = pd.DataFrame(self.__List)
+
+                case 2:
+                    NMatrixList = self.__NMatrix.tolist()
+                    self.__List = NMatrixList
+                    self.__PFrame = pd.DataFrame(self.__NMatrix)
+
+                case 3:
+                    PFrameList = self.__PFrame.values.tolist()
+                    self.__List = PFrameList
+                    self.__NMatrix = np.array(self.__PFrame)
+
+            self.markAction = 0
 
         # Getters
         def get__List(self):
@@ -102,7 +128,6 @@ if __name__ == '__main__':
         def get__NMatrix(self):
             return self.__NMatrix
 
-
     n = int(input("Enter the number of rows: "))
     m = int(input("Enter the number of columns: "))
 
@@ -112,12 +137,29 @@ if __name__ == '__main__':
 
     t1 = MetaMat(lst)
 
-    # transpose(col1, row1, col2, row2)
-    # matrix = [[11, 22, 33, 44], [55, 66, 77, 88],
-    #           [99, 111, 122, 133], [144, 155, 166, 177]]
+    # print("Before 1. swapping rows:\n", t1.get__List())
+    # print("Before 2. swapping cols:\n", t1.get__NMatrix())
+    print("Before 3. transposing:\n", t1.get__PFrame())
 
-    # df = pd.DataFrame(matrix)
+    # 1. swap list rows
+    # t1.swapListRows(0, 1)
 
-    print("Before slicing:\n", t1.get__PFrame())
+    # 2. swap matrix columns
+    # t1.swapMatrixColumns(0, 1)
 
-    print("After transposing:\n", t1.transposePSquare(t1.get__PFrame(), 0, 0, 2, 2))
+    # 3. transpose dataframe
+    t1.transposePSquare(0, 0, 2, 2)
+
+    # print("After 1. swapping rows:\n", t1.get__List())
+    # print("After 2. swapping cols:\n", t1.get__NMatrix())
+    print("After 3. transposing:\n", t1.get__PFrame())
+
+    print("List before update: \n", t1.get__List())
+    print("Pandas dataframe before update: \n", t1.get__PFrame())
+    print("Numpy array before update: \n", t1.get__NMatrix())
+
+    t1.update()
+
+    print("List after update: \n", t1.get__List())
+    print("Pandas dataframe after update: \n", t1.get__PFrame())
+    print("Numpy array after update: \n", t1.get__NMatrix())
